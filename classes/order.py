@@ -1,3 +1,6 @@
+from typing import Iterable
+from .product import Product
+
 class Order:
     """
     Класс Order
@@ -28,22 +31,45 @@ class Order:
         Возвращает строковое представление объекта заказа, включающее общую стоимость заказа.
         Пример: print(order1) выведет Order(total_price=1000).
     """
+    
     _total_orders = 0
+    _all_orders = []
 
-    def __init__(self, products):
-        self.products = products
+    def __init__(self, products: Iterable[Product]):
+        # сохраняем копию списка продуктов
+        self.products = list(products)
         Order._total_orders += 1
-
-    @staticmethod
-    def calculate_discounted_price(price, discount):
-        return price * (1 - discount / 100)
+        Order._all_orders.append(self)
 
     @classmethod
-    def total_orders(cls):
+    def total_orders(cls) -> int:
+        """    Метод total_orders:
+        Метод класса, который возвращает общее количество созданных заказов.
+        Пример: Order.total_orders() вернет общее количество заказов.
+
+        Returns:
+            int: общее количество созданных заказов
+        """
         return cls._total_orders
 
-    def total_price(self):
-        return sum(product.price for product in self.products)
+    @classmethod
+    def total_value_all_orders(cls) -> float:
+        return sum(o.total_price() for o in cls._all_orders)
+
+    def total_price(self) -> float:
+        """
+        Метод total_price:
+            Вычисляет общую стоимость всех товаров в заказе, суммируя их цены.
+            Пример: order1.total_price() вернет 1000, если в заказе один товар с ценой 1000.
+    
+        Returns:
+            float: общую стоимость всех товаров в заказе
+        """
+        return sum(p.price for p in self.products)
 
     def __str__(self):
-        return f"Заказ (Общая цена = {self.total_price()})"
+        return f"Заказ (товаров={len(self.products)}, общая_цена={self.total_price()})"
+
+    def __repr__(self):
+        prod_repr = ", ".join(repr(p) for p in self.products)
+        return f"Order(products=[{prod_repr}], total={self.total_price()})"

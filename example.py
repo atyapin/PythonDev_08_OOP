@@ -1,53 +1,82 @@
-# Пример использования статических методов и методов класса в интернет-магазине
-# Предположим, у нас есть интернет-магазин с классом Product, который представляет товар, и классом Order, который представляет заказ. 
-# Мы будем использовать статические методы для расчета скидок и методы класса для подсчета общего количества заказов.
-from classes.order import Order
-from classes.product import Product
+from classes import Product, Order, Customer, Discount
+
+def main():
+    # 1.	Создайте несколько продуктов и клиентов.
+    # Продукты
+    p1 = Product("Laptop", 1000)
+    p2 = Product("Mouse", 50)
+    p3 = Product("Keyboard", 80)
+    p4 = Product("Monitor", 250)
+
+    print("\n============================ Продукты:")
+    print(p1)
+    print(repr(p2))
+    print(p3)
+    print(repr(p4))
+    print("============================ Продукты\n")
+
+    # Клиенты
+    customer1 = Customer("Ирина")
+    customer2 = Customer("Оксана")
+    print("\n============================ Клиенты:")
+    print(customer1)
+    print(f"{customer2!r}")
+    print("============================ Клиенты\n")
+
+    # сравнение
+    print("\n============================ Сравнение продуктов по цене:")
+    print("p2 == p3 ?", p2 == p3)
+    print("p2 < p3 ?", p2 < p3)
+    print("============================ Сравнение продуктов по цене\n")
+
+    # 2 Создаём несколько заказов для клиентов, 
+    order1 = Order([p1, p2])   # 1000 + 50 = 1050
+    order2 = Order([p3, p4])   # 80 + 250 = 330
+    order3 = Order([p1, p1])   # 100 + 1000 = 2000
+
+    print("\n============================ Заказы:")
+    print(order1)
+    print(repr(order2))
+    print(repr(order3))
+    print("============================ Заказы\n")
+
+    # Добавляем заказы клиентам, используя соответствующую функциональность
+    customer1.place_order(order1)
+    customer1.place_order(order2)
+    customer2.place_order(order3)
+
+    print("\n============================ Все заказы до скидок:")    
+    print("Всего заказов (класс):", Order.total_orders())
+    print("Сумма всех заказов (класс):", Order.total_value_all_orders())
+    print("============================ Все аказы до скидок\n")    
+
+    # Клиенты с их заказами и итоговыми суммами до применения скидок
+    print("\n============================ Клиенты с их заказами и итоговыми суммами до применения скидок")
+    print(customer1)
+    print(f"{customer2!r}")
+    print("============================ Клиенты с их заказами и итоговыми суммами до применения скидок\n")
 
 
-# Создаем продукты
-product1 = Product("Laptop", 1000)
-product2 = Product("Smartphone", 500)
+    # 3.	Примените различные типы скидок к заказам.
+    seasonal_total, seasonal_percent = Discount.seasonal(order1, 10)
+    print(f"Сезонная скидка {seasonal_percent}% для order1: итог = {seasonal_total}")
 
-# Рассчитываем цену с учетом скидки
-discounted_price = Order.calculate_discounted_price(product1.price, 10)
-print(f"Сниженная цена на {product1.name}: {discounted_price}")  # Вывод: Сниженная цена на Laptop: 900.0
+    promo_total, promo_percent = Discount.promo_code(order2, "VIP20")
+    print(f"Промокод применён ({promo_percent}%): итог для order2 = {promo_total}")
 
-# Создаем заказы
-order1 = Order([product1])
-order2 = Order([product2, product1])
+    d = Discount("Специальная скидка", 15)
+    discounted = Discount.apply_to_order(order1, d.discount_percent)
+    print(f"{d}: order1 после скидки = {discounted}")
 
-# Выводим общее количество заказов
-print(f"Всего заказов: {Order.total_orders()}")  # Вывод: Всего заказов: 2
+    print("\n============================ Заказы после скидок:")    
+    print("Всего заказов (класс):", Order.total_orders())
+    print("Сумма всех заказов (класс):", Order.total_value_all_orders()) 
+    print("============================ Заказы после скидок\n")    
 
-# Выводим информацию о заказах
-print(order1)  # Вывод: Заказ (Общая цена = 1000)
-print(order2)  # Вывод: Заказ (Общая цена = 1500)
+    # Клиенты с их заказами и итоговыми суммами после применения скидок
+    print("Клиенты с их заказами и итоговыми суммами после применения скидок")
+    print(customer1)
+    print(f"{customer2!r}")
 
-
-"""
-Создание продуктов:
-
-    product1 создается с названием "Laptop" и ценой 1000.
-    product2 создается с названием "Smartphone" и ценой 500.
-
-Расчет цены с учетом скидки:
-
-    Рассчитывается цена product1 с 10% скидкой. Результат: 900.0.
-    print(f"Discounted price of {product1.name}: {discounted_price}") выводит: Discounted price of Laptop: 900.0.
-
-Создание заказов:
-
-    order1 создается с одним товаром product1.
-    order2 создается с двумя товарами: product1 и product2.
-
-Общее количество заказов:
-
-    Order.total_orders() возвращает 2, так как были созданы два заказа.
-    print(f"Total orders: {Order.total_orders()}") выводит: Total orders: 2.
-
-Информация о заказах:
-
-    print(order1) выводит: Order(total_price=1000), так как в order1 только один товар product1 с ценой 1000.
-    print(order2) выводит: Order(total_price=1500), так как в order2 два товара: product1 и product2 с общей ценой 1500.
-"""
+if __name__ == "__main__":
+    main()
