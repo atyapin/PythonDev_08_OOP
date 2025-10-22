@@ -68,15 +68,15 @@ def main():
     discounted = Discount.apply_to_order(order1, d.discount_percent)
     print(f"{d}: order1 после скидки = {discounted}")
 
-    print("\n============================ Заказы после скидок:")    
-    print("Всего заказов (класс):", Order.total_orders())
-    print("Сумма всех заказов (класс):", Order.total_value_all_orders()) 
-    print("============================ Заказы после скидок\n")    
+    # print("\n============================ Заказы после скидок:")    
+    # print("Всего заказов (класс):", Order.total_orders())
+    # print("Сумма всех заказов (класс):", Order.total_value_all_orders()) 
+    # print("============================ Заказы после скидок\n")    
 
     # Клиенты с их заказами и итоговыми суммами после применения скидок
-    print("Клиенты с их заказами и итоговыми суммами после применения скидок")
-    print(customer1)
-    print(f"{customer2!r}")
+    # print("Клиенты с их заказами и итоговыми суммами после применения скидок")
+    # print(customer1)
+    # print(f"{customer2!r}")
 
 if __name__ == "__main__":
     main()
